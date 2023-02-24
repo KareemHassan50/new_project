@@ -1,9 +1,14 @@
 <?php
 
+use App\Http\Controllers\Api\AboutUsController;
 use App\Http\Controllers\Api\CategoryController;
+use App\Http\Controllers\Api\ContactUsController;
 use App\Http\Controllers\Api\ImagesController;
 use App\Http\Controllers\Api\ProductController;
+use App\Http\Controllers\Api\SliderController;
+use App\Http\Controllers\Api\SocialMediaController;
 use App\Http\Controllers\Api\SupCategoryController;
+use App\Http\Controllers\Auth\AuthController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -23,32 +28,66 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 
-
-Route::group(['prefix' => 'categories'], function () {
-    Route::get('/', [CategoryController::class, 'index']);
-    Route::get('/{id}', [CategoryController::class, 'show']);
-    Route::post('/create', [CategoryController::class, 'create']);
-    Route::post('/update/{id}', [CategoryController::class, 'update']);
-    Route::delete('/delete/{id}', [CategoryController::class, 'destroy']);
+Route::group(['prefix' => 'User'], function () {
+    Route::post('/register', [AuthController::class, 'createUser']);
+    Route::post('/login', [AuthController::class, 'loginUser']);
+    Route::POST('/logout', [AuthController::class, 'logoutUser'])->middleware('auth:sanctum');
 });
-Route::group(['prefix' => 'SubCategory'], function () {
-    Route::get('/', [SupCategoryController::class, 'index']);
-    Route::get('/{id}', [SupCategoryController::class, 'show']);
-    Route::post('/create', [SupCategoryController::class, 'create']);
-    Route::post('/update/{id}', [SupCategoryController::class, 'update']);
-    Route::delete('/delete/{id}', [SupCategoryController::class, 'destroy']);
-});
-Route::group(['prefix' => 'products'], function () {
-    Route::get('/', [ProductController::class, 'index']);
-    Route::get('/{id}', [ProductController::class, 'show']);
-    Route::post('/create', [ProductController::class, 'create']);
-    Route::post('/update/{id}', [ProductController::class, 'update']);
-    Route::delete('/delete/{id}', [ProductController::class, 'destroy']);
-});
-Route::group(['prefix' => 'images'], function () {
-    Route::get('/', [ImagesController::class, 'index']);
-    Route::get('/{id}', [ImagesController::class, 'show']);
-    Route::post('/create', [ImagesController::class, 'create']);
-    Route::post('/update/{id}', [ImagesController::class, 'update']);
-    Route::delete('/delete/{id}', [ImagesController::class, 'destroy']);
+Route::group(['middleware' => 'auth:sanctum'], function () {
+    Route::group(['prefix' => 'categories'], function () {
+        Route::get('/', [CategoryController::class, 'index']);
+        Route::get('/{id}', [CategoryController::class, 'show']);
+        Route::post('/create', [CategoryController::class, 'create']);
+        Route::post('/update/{id}', [CategoryController::class, 'update']);
+        Route::delete('/delete/{id}', [CategoryController::class, 'destroy']);
+    });
+    Route::group(['prefix' => 'SubCategory'], function () {
+        Route::get('/', [SupCategoryController::class, 'index']);
+        Route::get('/{id}', [SupCategoryController::class, 'show']);
+        Route::post('/create', [SupCategoryController::class, 'create']);
+        Route::post('/update/{id}', [SupCategoryController::class, 'update']);
+        Route::delete('/delete/{id}', [SupCategoryController::class, 'destroy']);
+    });
+    Route::group(['prefix' => 'products'], function () {
+        Route::get('/', [ProductController::class, 'index']);
+        Route::get('/{id}', [ProductController::class, 'show']);
+        Route::post('/create', [ProductController::class, 'create']);
+        Route::post('/update/{id}', [ProductController::class, 'update']);
+        Route::delete('/delete/{id}', [ProductController::class, 'destroy']);
+    });
+    Route::group(['prefix' => 'images'], function () {
+        Route::get('/', [ImagesController::class, 'index']);
+        Route::get('/{id}', [ImagesController::class, 'show']);
+        Route::post('/create', [ImagesController::class, 'create']);
+        Route::post('/update/{id}', [ImagesController::class, 'update']);
+        Route::delete('/delete/{id}', [ImagesController::class, 'destroy']);
+    });
+    Route::group(['prefix' => 'slider'], function () {
+        Route::get('/', [SliderController::class, 'index']);
+        Route::get('/{id}', [SliderController::class, 'show']);
+        Route::post('/create', [SliderController::class, 'create']);
+        Route::post('/update/{id}', [SliderController::class, 'update']);
+        Route::delete('/delete/{id}', [SliderController::class, 'destroy']);
+    });
+    Route::group(['prefix' => 'aboutus'], function () {
+        Route::get('/', [AboutUsController::class, 'index']);
+        Route::get('/{id}', [AboutUsController::class, 'show']);
+        Route::post('/create', [AboutUsController::class, 'create']);
+        Route::post('/update/{id}', [AboutUsController::class, 'update']);
+        Route::delete('/delete/{id}', [AboutUsController::class, 'destroy']);
+    });
+    Route::group(['prefix' => 'socialmedia'], function () {
+        Route::get('/', [SocialMediaController::class, 'index']);
+        Route::get('/{id}', [SocialMediaController::class, 'show']);
+        Route::post('/create', [SocialMediaController::class, 'create']);
+        Route::post('/update/{id}', [SocialMediaController::class, 'update']);
+        Route::delete('/delete/{id}', [SocialMediaController::class, 'destroy']);
+    });
+    Route::group(['prefix' => 'contactus'], function () {
+        Route::get('/', [ContactUsController::class, 'index']);
+        Route::get('/{id}', [ContactUsController::class, 'show']);
+        Route::post('/create', [ContactUsController::class, 'create']);
+        Route::post('/update/{id}', [ContactUsController::class, 'update']);
+        Route::delete('/delete/{id}', [ContactUsController::class, 'destroy']);
+    });
 });

@@ -3,50 +3,50 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\Category;
+use App\Models\Slider;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
-class CategoryController extends Controller
+class SliderController extends Controller
 {
     public function index()
     {
-        $categories = Category::with('subCategory')->get();
-        if ($categories->count() == 0) {
+        $slider = Slider::get();
+        if ($slider->count() == 0) {
             return response()->json([
                 'status' => true,
-                'message' => 'Nothing Categories Now'
+                'message' => 'Nothing Slider Now'
             ], 200);
         }
-        return response($categories);
+        return response($slider);
     }
-
     public function show($id)
     {
-        $category = Category::where('id', $id)->with('subCategory')->get();
-        if ($category->count() == 0) {
+        $slider = Slider::where('id', $id)->get();
+        if ($slider->count() == 0) {
             return response()->json([
                 'status' => true,
-                'message' => 'Nothing Categories Now'
-            ], 401);
+                'message' => 'Nothing Slider Now'
+            ], 200);
         }
-        return response($category);
+        return response($slider);
     }
+
     public function create(Request $req)
     {
-        $validateCategory = Validator::make(
+        $validateSlider = Validator::make(
             $req->all(),
             [
                 "name" => 'required',
-                "desctription" => 'required',
+                "description" => 'required',
                 'image' => 'required|mimes:png,jpg',
             ]
         );
-        if ($validateCategory->fails()) {
+        if ($validateSlider->fails()) {
             return response()->json([
                 'status' => false,
                 'message' => 'validation error',
-                'errors' => $validateCategory->errors()
+                'errors' => $validateSlider->errors()
             ], 401);
         }
         $image = $req->image;
@@ -54,17 +54,17 @@ class CategoryController extends Controller
             $file = $req->file('image');
             $extention = $file->getClientOriginalExtension();
             $filename = "Image" .  time() . '.' . $extention;
-            $path =  url('/images/category/' . $filename);
+            $path =  url('/images/slider/' . $filename);
         }
-        $category =  Category::create([
+        $category =  Slider::create([
             "name" => $req->name,
-            "desctription" => $req->desctription,
+            "description" => $req->description,
             'image' => $path,
         ]);
-        $file->move('images/category/', $filename);
+        $file->move('images/slider/', $filename);
         return response()->json([
             'status' => true,
-            'message' => 'Category Created Successfully',
+            'message' => 'Slider Created Successfully',
         ], 200);
     }
     public function update(Request $req, $id)
@@ -73,7 +73,7 @@ class CategoryController extends Controller
             $req->all(),
             [
                 "name" => 'required',
-                "desctription" => 'required',
+                "description" => 'required',
                 'image' => 'required|mimes:png,jpg',
             ]
         );
@@ -84,47 +84,47 @@ class CategoryController extends Controller
                 'errors' => $validateCategory->errors()
             ], 401);
         }
-        $category = Category::findOrFail($id);
-        $name = $category->image;
-        $nameImageUpdate = ltrim($name, url('/images/category'));
+        $slider = Slider::findOrFail($id);
+        $name = $slider->image;
+        $nameImageUpdate = ltrim($name, url('/images/slider'));
         $imagess = $req->file("image");
         if ($imagess) {
             if ($nameImageUpdate !== null) {
-                unlink(public_path("images/category/") . $nameImageUpdate);
+                unlink(public_path("images/slider/") . $nameImageUpdate);
             }
             $image = $req->file("image");
             $nameOfNewImage = "Image" . time() . "." . $image->getClientOriginalExtension();
-            $path =  url('/images/category/' . $nameOfNewImage);
+            $path =  url('/images/slider/' . $nameOfNewImage);
         }
-        $category->update([
+        $slider->update([
             "name" => $req->name,
-            "desctription" => $req->desctription,
+            "description" => $req->description,
             'image' => $path,
         ]);
-        $image->move(public_path("images/category/"), $nameOfNewImage);
+        $image->move(public_path("images/slider/"), $nameOfNewImage);
         return response()->json([
             'status' => true,
-            'message' => 'Category Updated Successfully',
+            'message' => 'Slider Updated Successfully',
         ], 200);
     }
     public function destroy($id)
     {
-        $category = Category::findOrFail($id);
-        $imagePath =  $category->image;
-        $nameImageDelete = ltrim($imagePath, url('/images/category'));
+        $slider = Slider::findOrFail($id);
+        $imagePath =  $slider->image;
+        $nameImageDelete = ltrim($imagePath, url('/images/slider'));
         if ($nameImageDelete) {
-            unlink(public_path("images/category/") . $nameImageDelete);
+            unlink(public_path("images/slider/") . $nameImageDelete);
         }
-        $category->delete();
-        if ($category) {
+        $slider->delete();
+        if ($slider) {
             return response()->json([
                 'status' => true,
-                'message' => 'Category Deleted Successfully',
+                'message' => 'Slider Deleted Successfully',
             ], 200);
         }
         return response()->json([
             'status' => false,
-            'message' => 'Category not Deleted',
+            'message' => 'Slider not Deleted',
         ], 401);
     }
 }
